@@ -9,7 +9,7 @@ const client = createClient({
 })
 
 export async function GET() {
-  const baseUrl = 'https://leaderspressafrica.com'
+  const baseUrl = 'https://leaders-press-africa.vercel.app'
 
   const posts = await client.fetch(
     groq`*[_type == "post"] | order(publishedAt desc) {
