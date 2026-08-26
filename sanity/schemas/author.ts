@@ -1,4 +1,4 @@
-export const author = {
+const author = {
   name: 'author',
   title: 'Auteur',
   type: 'document',
@@ -7,18 +7,14 @@ export const author = {
       name: 'name',
       title: 'Nom',
       type: 'string',
-      validation: (Rule: any) => Rule.required(),
     },
     {
       name: 'image',
-      title: 'Photo de profil',
+      title: 'Image',
       type: 'image',
       options: { hotspot: true },
     },
-    {
-      name: 'bio',
-      title: 'Biographie',
-      type: 'text',
-    },
   ],
 }
+
+export default author
