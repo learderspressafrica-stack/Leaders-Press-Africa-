@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "sanity/schemas/author", "sanity/schemas/post", "sanity/schemas/index"  ],
   "exclude": ["node_modules"]
 }

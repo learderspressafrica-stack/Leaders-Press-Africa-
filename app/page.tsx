@@ -1,69 +1,142 @@
-import Image from "next/image";
+import { createClient } from 'next-sanity'
+import { POSTS_QUERY } from '@/sanity/queries'
+import { urlFor } from '@/sanity/image'
+import Link from 'next/link'
+import Image from 'next/image'
+import AdBanner from '@/app/components/AdBanner'
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+const client = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'dc6zf0ru',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  useCdn: false,
+})
+
+export default async function HomePage() {
+  const posts = await client.fetch(POSTS_QUERY)
+
+  if (!posts || posts.length === 0) {
+    return (
+      <main className="max-w-6xl mx-auto px-4 py-12 text-center">
+        <p className="text-gray-500">Aucun article disponible pour le moment.</p>
       </main>
-    </div>
-  );
+    )
+  }
+
+  const mainPost = posts[0]
+  const recentPosts = posts.slice(1, 4)
+
+  return (
+    <main className="max-w-6xl mx-auto px-4 py-8">
+      {/* BANNIÈRE PUBLICITAIRE HAUT DE PAGE */}
+      <AdBanner format="horizontal" />
+
+      {/* SECTION PRINCIPALE : À LA UNE + FIL D'ACTUALITÉ (SIDEBAR) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 border-b border-gray-200 pb-10">
+        
+        {/* BLOC GAUCHE : UNE + RECENTS (8 COLS) */}
+        <div className="lg:col-span-8">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-red-600 mb-4 border-l-4 border-red-600 pl-2">
+            À la une
+          </h2>
+          
+          <div className="mb-8">
+            {mainPost.mainImage && (
+              <div className="relative w-full h-[320px] md:h-[400px] rounded-lg overflow-hidden shadow-sm mb-4">
+                <Image
+                  src={urlFor(mainPost.mainImage).url()}
+                  alt={mainPost.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            )}
+            {mainPost.category && (
+              <span className="text-xs font-bold text-red-600 uppercase tracking-wider">
+                {mainPost.category}
+              </span>
+            )}
+            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mt-1 mb-3 hover:text-red-600 transition">
+              <Link href={`/posts/${mainPost.slug?.current}`}>
+                {mainPost.title}
+              </Link>
+            </h1>
+            {mainPost.excerpt && (
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed line-clamp-3 mb-3">
+                {mainPost.excerpt}
+              </p>
+            )}
+            {mainPost.author?.name && (
+              <p className="text-xs text-gray-500 font-medium">
+                Par <span className="text-gray-800">{mainPost.author.name}</span>
+              </p>
+            )}
+          </div>
+
+          {/* Grille secondaire sous la UNE */}
+          {recentPosts.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-gray-100">
+              {recentPosts.map((post: any) => (
+                <article key={post._id} className="flex flex-col">
+                  {post.mainImage && (
+                    <div className="relative w-full h-28 rounded overflow-hidden mb-2">
+                      <Image
+                        src={urlFor(post.mainImage).url()}
+                        alt={post.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  {post.category && (
+                    <span className="text-[10px] font-bold text-red-600 uppercase">
+                      {post.category}
+                    </span>
+                  )}
+                  <h3 className="text-xs font-bold text-gray-900 mt-1 hover:text-red-600 transition leading-snug line-clamp-2">
+                    <Link href={`/posts/${post.slug?.current}`}>
+                      {post.title}
+                    </Link>
+                  </h3>
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* BLOC DROITE : SIDEBAR FIL D'ACTUALITÉ (4 COLS) */}
+        <aside className="lg:col-span-4 space-y-6">
+          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+            <div className="flex items-center space-x-2 mb-4 border-b border-gray-300 pb-2">
+              <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
+              <h2 className="text-xs font-extrabold uppercase tracking-wider text-gray-900">
+                Fil d'actualité / Flash Info
+              </h2>
+            </div>
+
+            <div className="space-y-4 divide-y divide-gray-200">
+              {posts.slice(0, 6).map((post: any, index: number) => (
+                <div key={post._id} className={`${index !== 0 ? 'pt-3' : ''}`}>
+                  <span className="text-[10px] font-semibold text-gray-400 block mb-0.5">
+                    Dernières minutes
+                  </span>
+                  <Link
+                    href={`/posts/${post.slug?.current}`}
+                    className="text-xs font-bold text-gray-800 hover:text-red-600 transition leading-tight block"
+                  >
+                    {post.title}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* BANNIÈRE PUBLICITAIRE LATÉRALE (SIDEBAR) */}
+          <AdBanner format="sidebar" />
+        </aside>
+
+      </div>
+    </main>
+  )
 }
