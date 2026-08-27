@@ -33,18 +33,18 @@ export default function ShareButtons({ title }: ShareButtonsProps) {
   }
 
   return (
-    <div className="my-6 py-4 border-y border-gray-100 flex flex-wrap items-center justify-between gap-3">
-      <span className="text-xs font-extrabold uppercase tracking-wider text-gray-700">
+    <div className="my-6 py-4 border-y border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <span className="text-xs font-extrabold uppercase tracking-wider text-gray-400">
         Partager l'article :
       </span>
 
-      <div className="flex items-center space-x-2">
+      <div className="flex flex-wrap items-center gap-2">
         {/* WhatsApp */}
         <a
           href={shareLinks.whatsapp}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded transition flex items-center space-x-1"
+          className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded transition flex items-center"
         >
           <span>WhatsApp</span>
         </a>
@@ -54,7 +54,7 @@ export default function ShareButtons({ title }: ShareButtonsProps) {
           href={shareLinks.facebook}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded transition flex items-center space-x-1"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded transition flex items-center"
         >
           <span>Facebook</span>
         </a>
@@ -64,7 +64,7 @@ export default function ShareButtons({ title }: ShareButtonsProps) {
           href={shareLinks.twitter}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-black hover:bg-gray-800 text-white text-xs font-bold px-3 py-1.5 rounded transition flex items-center space-x-1"
+          className="bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold px-3 py-1.5 rounded transition flex items-center border border-gray-700"
         >
           <span>X</span>
         </a>
@@ -74,7 +74,7 @@ export default function ShareButtons({ title }: ShareButtonsProps) {
           href={shareLinks.linkedin}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold px-3 py-1.5 rounded transition flex items-center space-x-1"
+          className="bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold px-3 py-1.5 rounded transition flex items-center"
         >
           <span>LinkedIn</span>
         </a>
@@ -82,7 +82,7 @@ export default function ShareButtons({ title }: ShareButtonsProps) {
         {/* Copier le lien */}
         <button
           onClick={handleCopy}
-          className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold px-3 py-1.5 rounded transition"
+          className="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold px-3 py-1.5 rounded transition border border-gray-700"
         >
           {copied ? 'Lien copié !' : 'Copier le lien'}
         </button>
