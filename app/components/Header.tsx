@@ -19,9 +19,9 @@ export default function Header() {
   ]
 
   return (
-    <header className="border-b border-gray-200 bg-white">
+    <header className="border-b border-gray-800 bg-gray-950 text-white">
       {/* Top bar avec date, branding et barre de recherche */}
-      <div className="bg-gray-900 text-gray-300 text-xs py-1.5 px-4">
+      <div className="bg-gray-900 text-gray-300 text-xs py-1.5 px-4 border-b border-gray-800">
         <div className="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-2 capitalize">
           <span>{currentDate}</span>
           <span className="font-semibold text-red-500 hidden md:inline">
@@ -32,25 +32,25 @@ export default function Header() {
       </div>
 
       {/* Main Logo Header */}
-      <div className="max-w-6xl mx-auto px-4 py-6 text-center border-b border-gray-100">
+      <div className="max-w-6xl mx-auto px-4 py-6 text-center border-b border-gray-800">
         <Link href="/" className="inline-block">
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 uppercase">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white uppercase">
             LEADERS PRESS <span className="text-red-600">AFRICA</span>
           </h1>
-          <p className="text-xs tracking-widest text-gray-500 uppercase mt-1">
+          <p className="text-[10px] sm:text-xs tracking-widest text-gray-400 uppercase mt-1">
             Média d'actualité, d'analyse et de décryptage
           </p>
         </Link>
       </div>
 
-      {/* Navigation bar */}
-      <nav className="max-w-6xl mx-auto px-4 overflow-x-auto">
-        <ul className="flex items-center justify-center space-x-6 py-3 text-sm font-semibold uppercase tracking-wider text-gray-700 whitespace-nowrap">
+      {/* Navigation bar avec défilement fluide sur mobile */}
+      <nav className="max-w-6xl mx-auto px-4 overflow-x-auto scrollbar-none">
+        <ul className="flex items-center justify-start md:justify-center space-x-6 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-gray-300 whitespace-nowrap min-w-max">
           {categories.map((cat) => (
             <li key={cat.name}>
               <Link
                 href={cat.href}
-                className="hover:text-red-600 transition-colors duration-200"
+                className="hover:text-red-500 transition-colors duration-200"
               >
                 {cat.name}
               </Link>
