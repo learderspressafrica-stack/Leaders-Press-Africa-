@@ -58,8 +58,8 @@ export default async function PostPage({ params }: PostPageProps) {
   if (!post) {
     return (
       <main className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold text-gray-800">Article non trouvé</h1>
-        <Link href="/" className="mt-4 inline-block text-red-600 hover:underline">
+        <h1 className="text-2xl font-bold text-white">Article non trouvé</h1>
+        <Link href="/" className="mt-4 inline-block text-red-500 hover:underline">
           ← Retourner à l'accueil
         </Link>
       </main>
@@ -90,7 +90,7 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
+    <main className="max-w-4xl mx-auto px-4 py-8 text-white">
       {/* SCRIPT DE BALISAGE GOOGLE NEWS */}
       <script
         type="application/ld+json"
@@ -98,20 +98,20 @@ export default async function PostPage({ params }: PostPageProps) {
       />
 
       {/* En-tête de l'article */}
-      <article className="border-b border-gray-200 pb-12">
+      <article className="border-b border-gray-800 pb-12">
         {post.category && (
-          <span className="text-xs font-bold text-red-600 uppercase tracking-wider">
+          <span className="text-xs font-bold text-red-500 uppercase tracking-wider">
             {post.category}
           </span>
         )}
-        <h1 className="text-3xl md:text-5xl font-black text-gray-900 mt-2 mb-4 leading-tight">
+        <h1 className="text-3xl md:text-5xl font-black text-white mt-2 mb-4 leading-tight">
           {post.title}
         </h1>
 
-        <div className="flex items-center space-x-4 text-xs text-gray-500 mb-6">
+        <div className="flex items-center space-x-4 text-xs text-gray-400 mb-6">
           {post.author?.name && (
             <span>
-              Par <strong className="text-gray-800">{post.author.name}</strong>
+              Par <strong className="text-gray-200">{post.author.name}</strong>
             </span>
           )}
           {post.publishedAt && (
@@ -134,8 +134,8 @@ export default async function PostPage({ params }: PostPageProps) {
           </div>
         )}
 
-        {/* Corps du texte */}
-        <div className="prose prose-lg max-w-none text-gray-800 leading-relaxed">
+        {/* Corps du texte en blanc et gris clair */}
+        <div className="prose prose-lg prose-invert max-w-none text-gray-200 leading-relaxed">
           {post.body && <PortableText value={post.body} />}
         </div>
       </article>
@@ -148,14 +148,14 @@ export default async function PostPage({ params }: PostPageProps) {
 
       {/* SECTION ARTICLES SIMILAIRES */}
       {relatedPosts.length > 0 && (
-        <section className="mt-12 pt-8 border-t border-gray-200">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-6 border-l-4 border-red-600 pl-2">
+        <section className="mt-12 pt-8 border-t border-gray-800">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-white mb-6 border-l-4 border-red-600 pl-2">
             À lire aussi
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {relatedPosts.map((related: any) => (
-              <article key={related._id} className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
+              <article key={related._id} className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
                 {related.mainImage && (
                   <div className="relative w-full h-36">
                     <Image
@@ -169,11 +169,11 @@ export default async function PostPage({ params }: PostPageProps) {
                 <div className="p-4 flex-grow flex flex-col justify-between">
                   <div>
                     {related.category && (
-                      <span className="text-[10px] font-bold text-red-600 uppercase tracking-wide">
+                      <span className="text-[10px] font-bold text-red-500 uppercase tracking-wide">
                         {related.category}
                       </span>
                     )}
-                    <h3 className="text-sm font-bold text-gray-900 mt-1 hover:text-red-600 transition leading-snug line-clamp-2">
+                    <h3 className="text-sm font-bold text-white mt-1 hover:text-red-500 transition leading-snug line-clamp-2">
                       <Link href={`/posts/${related.slug?.current}`}>
                         {related.title}
                       </Link>
