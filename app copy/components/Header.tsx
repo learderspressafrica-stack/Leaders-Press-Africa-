@@ -20,8 +20,8 @@ export default function Header() {
   ]
 
   return (
-    <header className="border-b border-gray-200 bg-white">
-      {/* Top bar avec date, branding et barre de recherche */}
+    <header className="border-b border-gray-200 bg-white text-gray-900">
+      {/* Top bar avec date et recherche */}
       <div className="bg-gray-900 text-gray-300 text-xs py-1.5 px-4">
         <div className="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-2 capitalize">
           <span>{currentDate}</span>
@@ -44,7 +44,7 @@ export default function Header() {
         </Link>
       </div>
 
-      {/* Navigation bar */}
+      {/* Navigation bar avec SPORT */}
       <nav className="max-w-6xl mx-auto px-4 overflow-x-auto">
         <ul className="flex items-center justify-center space-x-6 py-3 text-sm font-semibold uppercase tracking-wider text-gray-700 whitespace-nowrap">
           {categories.map((cat) => (
