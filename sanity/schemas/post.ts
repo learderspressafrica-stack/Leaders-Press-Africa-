@@ -18,6 +18,21 @@ const post = {
       },
     },
     {
+      name: 'category',
+      title: 'Catégorie',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Économie', value: 'Économie' },
+          { title: 'Politique', value: 'Politique' },
+          { title: 'Société', value: 'Société' },
+          { title: 'Tech & Innovation', value: 'Tech & Innovation' },
+          { title: 'Culture', value: 'Culture' },
+          { title: 'Sport', value: 'Sport' },
+        ],
+      },
+    },
+    {
       name: 'author',
       title: 'Auteur',
       type: 'reference',

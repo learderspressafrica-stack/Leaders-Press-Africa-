@@ -16,6 +16,7 @@ export default function Header() {
     { name: 'Société', href: '/category/societe' },
     { name: 'Tech & Innovation', href: '/category/tech' },
     { name: 'Culture', href: '/category/culture' },
+    { name: 'Sport', href: '/category/sport' },
   ]
 
   return (
