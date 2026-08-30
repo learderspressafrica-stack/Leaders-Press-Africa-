@@ -1,25 +1,27 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@sanity/client'
+import { createClient } from 'next-sanity'
+import { Resend } from 'resend'
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'dc6zf0ru',
   dataset: 'production',
   apiVersion: '2024-01-01',
+  token: process.env.SANITY_API_TOKEN,
   useCdn: false,
-  token: process.env.SANITY_API_WRITE_TOKEN,
 })
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { name, email, subject, message } = await req.json()
+    const { name, email, subject, message } = await request.json()
 
-    if (!name || !email || !subject || !message) {
+    if (!name || !email || !message) {
       return NextResponse.json(
-        { error: 'Tous les champs sont requis.' },
+        { error: 'Champs obligatoires manquants.' },
         { status: 400 }
       )
     }
 
+    // 1. Enregistrement dans Sanity Studio
     await client.create({
       _type: 'contact',
       name,
@@ -29,11 +31,31 @@ export async function POST(req: Request) {
       createdAt: new Date().toISOString(),
     })
 
-    return NextResponse.json({ success: true, message: 'Message envoyé avec succès !' })
-  } catch (error) {
+    // 2. Envoi d'e-mail uniquement si la clé Resend est présente
+    const apiKey = process.env.RESEND_API_KEY
+    if (apiKey) {
+      const resend = new Resend(apiKey)
+      await resend.emails.send({
+        from: 'Leaders Press Africa <onboarding@resend.dev>',
+        to: 'learderspressafrica@gmail.com',
+        subject: `Nouveau message de contact : ${subject || 'Sans sujet'}`,
+        html: `
+          <h2>Nouveau message reçu depuis le site Leaders Press Africa</h2>
+          <p><strong>Nom :</strong> ${name}</p>
+          <p><strong>Email :</strong> ${email}</p>
+          <p><strong>Sujet :</strong> ${subject || 'Non renseigné'}</p>
+          <hr />
+          <p><strong>Message :</strong></p>
+          <p>${message}</p>
+        `,
+      })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error: any) {
     console.error('Erreur API Contact:', error)
     return NextResponse.json(
-      { error: "Une erreur est survenue lors de l'envoi." },
+      { error: 'Erreur lors de l’envoi du message.' },
       { status: 500 }
     )
   }
