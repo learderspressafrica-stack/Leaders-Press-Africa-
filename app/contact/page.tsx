@@ -16,10 +16,10 @@ export default function ContactPage() {
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value,
-    }))
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,7 +56,6 @@ export default function ContactPage() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        {/* INFOS DE CONTACT */}
         <div className="space-y-6 text-sm text-gray-600">
           <p>
             Vous souhaitez soumettre une information, réagir à un article ou entrer en contact avec notre équipe rédactionnelle ? N&apos;hésitez pas à nous joindre.
@@ -78,7 +77,6 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* FORMULAIRE */}
         <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
           <h2 className="text-sm font-extrabold uppercase text-gray-900 mb-4 border-l-4 border-red-600 pl-2">
             Envoyer un message
