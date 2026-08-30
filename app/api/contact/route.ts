@@ -12,50 +12,51 @@ const client = createClient({
 
 export async function POST(request: Request) {
   try {
-    const { name, email, subject, message } = await request.json()
+    const { name, email, comment, postId } = await request.json()
 
-    if (!name || !email || !message) {
+    if (!name || !email || !comment || !postId) {
       return NextResponse.json(
         { error: 'Champs obligatoires manquants.' },
         { status: 400 }
       )
     }
 
-    // 1. Enregistrement dans Sanity Studio
+    // Enregistrement du commentaire dans Sanity
     await client.create({
-      _type: 'contact',
+      _type: 'comment',
+      post: {
+        _type: 'reference',
+        _ref: postId,
+      },
       name,
       email,
-      subject,
-      message,
+      comment,
+      approved: false,
       createdAt: new Date().toISOString(),
     })
 
-    // 2. Envoi d'e-mail uniquement si la clé Resend est présente
+    // Envoi de notification uniquement si la clé existe
     const apiKey = process.env.RESEND_API_KEY
     if (apiKey) {
       const resend = new Resend(apiKey)
       await resend.emails.send({
         from: 'Leaders Press Africa <onboarding@resend.dev>',
         to: 'learderspressafrica@gmail.com',
-        subject: `Nouveau message de contact : ${subject || 'Sans sujet'}`,
+        subject: `Nouveau commentaire à valider de ${name}`,
         html: `
-          <h2>Nouveau message reçu depuis le site Leaders Press Africa</h2>
-          <p><strong>Nom :</strong> ${name}</p>
-          <p><strong>Email :</strong> ${email}</p>
-          <p><strong>Sujet :</strong> ${subject || 'Non renseigné'}</p>
-          <hr />
-          <p><strong>Message :</strong></p>
-          <p>${message}</p>
+          <h2>Nouveau commentaire soumis</h2>
+          <p><strong>Auteur :</strong> ${name} (${email})</p>
+          <p><strong>Commentaire :</strong></p>
+          <p>${comment}</p>
         `,
       })
     }
 
     return NextResponse.json({ success: true })
   } catch (error: any) {
-    console.error('Erreur API Contact:', error)
+    console.error('Erreur API Comment:', error)
     return NextResponse.json(
-      { error: 'Erreur lors de l’envoi du message.' },
+      { error: 'Erreur lors de la soumission du commentaire.' },
       { status: 500 }
     )
   }
