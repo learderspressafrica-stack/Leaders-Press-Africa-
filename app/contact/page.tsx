@@ -16,7 +16,10 @@ export default function ContactPage() {
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,7 +92,7 @@ export default function ContactPage() {
 
           {status.success && (
             <div className="mb-4 p-3 bg-green-100 border border-green-300 text-green-700 text-xs rounded">
-              Votre message a été envoyé avec succès ! Merci de nous avoir contactés.
+              Votre message a été envoyé avec succès !
             </div>
           )}
 
@@ -102,7 +105,7 @@ export default function ContactPage() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 border border-gray-300 rounded focus:ring-1 focus:ring-red-600 focus:outline-none"
+                className="w-full p-2.5 border border-gray-300 rounded focus:ring-1 focus:ring-red-600 focus:outline-none text-gray-900"
               />
             </div>
 
@@ -114,7 +117,7 @@ export default function ContactPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 border border-gray-300 rounded focus:ring-1 focus:ring-red-600 focus:outline-none"
+                className="w-full p-2.5 border border-gray-300 rounded focus:ring-1 focus:ring-red-600 focus:outline-none text-gray-900"
               />
             </div>
 
@@ -125,7 +128,7 @@ export default function ContactPage() {
                 name="subject"
                 value={formData.subject}
                 onChange={handleChange}
-                className="w-full p-2.5 border border-gray-300 rounded focus:ring-1 focus:ring-red-600 focus:outline-none"
+                className="w-full p-2.5 border border-gray-300 rounded focus:ring-1 focus:ring-red-600 focus:outline-none text-gray-900"
               />
             </div>
 
@@ -137,7 +140,7 @@ export default function ContactPage() {
                 value={formData.message}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 border border-gray-300 rounded focus:ring-1 focus:ring-red-600 focus:outline-none"
+                className="w-full p-2.5 border border-gray-300 rounded focus:ring-1 focus:ring-red-600 focus:outline-none text-gray-900"
               ></textarea>
             </div>
 
