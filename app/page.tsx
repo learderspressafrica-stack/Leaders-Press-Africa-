@@ -1,3 +1,5 @@
+export const revalidate = 0
+
 import { createClient } from 'next-sanity'
 import { POSTS_QUERY } from '@/sanity/queries'
 import { urlFor } from '@/sanity/image'
@@ -13,7 +15,7 @@ const client = createClient({
 })
 
 export default async function HomePage() {
-  const posts = await client.fetch(POSTS_QUERY)
+  const posts = await client.fetch(POSTS_QUERY, {}, { next: { revalidate: 0 } })
 
   if (!posts || posts.length === 0) {
     return (
@@ -111,7 +113,7 @@ export default async function HomePage() {
             <div className="flex items-center space-x-2 mb-4 border-b border-gray-300 pb-2">
               <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
               <h2 className="text-xs font-extrabold uppercase tracking-wider text-gray-900">
-                Fil d'actualité / Flash Info
+                Fil d&apos;actualité / Flash Info
               </h2>
             </div>
 

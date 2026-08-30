@@ -9,11 +9,37 @@ export default function ContactPage() {
     subject: '',
     message: '',
   })
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+    setStatus('loading')
+    setErrorMessage('')
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        throw new Error(data.error || "Erreur lors de l'envoi du message.")
+      }
+
+      setStatus('success')
+      setFormData({ name: '', email: '', subject: '', message: '' })
+    } catch (err: unknown) {
+      setStatus('error')
+      if (err instanceof Error) {
+        setErrorMessage(err.message)
+      } else {
+        setErrorMessage('Une erreur est survenue.')
+      }
+    }
   }
 
   return (
@@ -28,10 +54,10 @@ export default function ContactPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Colonne Coordonnées */}
+        {/* Informations de contact */}
         <div className="space-y-6">
           <p className="text-sm text-gray-700 leading-relaxed">
-            Vous souhaitez soumettre une information, réagir à un article ou entrer en contact avec notre équipe rédactionnelle ? N'hésitez pas à nous joindre.
+            Vous souhaitez soumettre une information, réagir à un article ou entrer en contact avec notre équipe rédactionnelle ? N&apos;hésitez pas à nous joindre.
           </p>
 
           <div className="space-y-4 text-xs text-gray-800">
@@ -65,18 +91,31 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* Colonne Formulaire */}
+        {/* Formulaire de contact */}
         <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
           <h2 className="text-xs font-extrabold uppercase tracking-wider text-gray-900 mb-4 border-l-4 border-red-600 pl-2">
             Envoyer un message
           </h2>
 
-          {submitted ? (
-            <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded text-xs">
-              Merci ! Votre message a bien été envoyé à notre équipe.
+          {status === 'success' ? (
+            <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded text-xs space-y-2">
+              <p className="font-bold">Message envoyé avec succès !</p>
+              <p>Merci, notre équipe rédactionnelle vous répondra dans les plus brefs délais.</p>
+              <button 
+                onClick={() => setStatus('idle')}
+                className="mt-2 text-red-600 underline text-[11px]"
+              >
+                Envoyer un autre message
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+              {status === 'error' && (
+                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded text-xs">
+                  {errorMessage}
+                </div>
+              )}
+
               <div>
                 <label className="block font-semibold text-gray-700 mb-1">Nom complet</label>
                 <input
@@ -123,9 +162,10 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded transition uppercase tracking-wider text-[11px]"
+                disabled={status === 'loading'}
+                className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-bold py-2 rounded transition uppercase tracking-wider text-[11px]"
               >
-                Envoyer le message
+                {status === 'loading' ? 'Envoi en cours...' : 'Envoyer le message'}
               </button>
             </form>
           )}
