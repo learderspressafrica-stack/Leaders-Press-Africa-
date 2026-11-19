@@ -16,7 +16,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     }
 
-    const { title, slug, excerpt } = await req.json()
+    const payload = await req.json()
+    
+    // Supporte le format direct { title, slug } ET le format natif Sanity { title, slug: { current } }
+    const title = payload?.title
+    const slug = typeof payload?.slug === 'string' ? payload.slug : payload?.slug?.current
+    const excerpt = payload?.excerpt || ''
+
     if (!title || !slug) {
       return NextResponse.json(
         { error: 'Titre et slug de l’article requis.' },
@@ -54,22 +60,30 @@ export async function POST(req: Request) {
     const resend = new Resend(apiKey)
     const articleUrl = `https://leaders-press-africa.vercel.app/posts/${slug}`
 
+    // Envoi en copie cachée (bcc) pour protéger la confidentialité des abonnés
     const { error } = await resend.emails.send({
       from: 'CIME <onboarding@resend.dev>',
-      to: uniqueEmails,
+      to: 'learderspressafrica@gmail.com',
+      bcc: uniqueEmails,
       subject: `Nouvelle publication sur CIME : ${title}`,
       html: `
-        <h2>Nouvel article publié sur CIME</h2>
-        <p><strong>${title}</strong></p>
-        ${excerpt ? `<p>${excerpt}</p>` : ''}
-        <p><a href="${articleUrl}">Lire l’article complet sur CIME</a></p>
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #dc2626;">Nouvel article publié sur CIME</h2>
+          <h3 style="color: #111827;">${title}</h3>
+          ${excerpt ? `<p style="color: #4b5563;">${excerpt}</p>` : ''}
+          <p style="margin-top: 24px;">
+            <a href="${articleUrl}" style="background-color: #dc2626; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+              Lire l’article complet sur CIME
+            </a>
+          </p>
+        </div>
       `,
     })
 
     if (error) {
       console.error('Erreur envoi Resend abonnés:', error)
       return NextResponse.json(
-        { error: 'Échec de l’envoi aux abonnés.' },
+        { error: 'Échec de l’envoi aux abonnés.', details: error },
         { status: 500 }
       )
     }
