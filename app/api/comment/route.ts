@@ -36,11 +36,11 @@ export async function POST(request: Request) {
 
     // 2. Envoi automatique de la notification vers ta boîte Gmail
     await resend.emails.send({
-      from: 'Leaders Press Africa <onboarding@resend.dev>',
+      from: 'CIME <onboarding@resend.dev>',
       to: 'learderspressafrica@gmail.com',
       subject: `Nouveau message de contact : ${subject || 'Sans sujet'}`,
       html: `
-        <h2>Nouveau message reçu depuis le site Leaders Press Africa</h2>
+        <h2>Nouveau message reçu depuis le site CIME</h2>
         <p><strong>Nom :</strong> ${name}</p>
         <p><strong>Email :</strong> ${email}</p>
         <p><strong>Sujet :</strong> ${subject || 'Non renseigné'}</p>

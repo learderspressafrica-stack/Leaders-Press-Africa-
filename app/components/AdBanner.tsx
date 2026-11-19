@@ -11,7 +11,7 @@ export default function AdBanner({
   format = 'horizontal',
   imageUrl,
   targetUrl = '#',
-  altText = 'Espace Publicitaire - Leaders Press Africa',
+  altText = 'Espace Publicitaire - CIME',
 }: AdBannerProps) {
   // Styles selon le format de la pub
   const formatStyles = {

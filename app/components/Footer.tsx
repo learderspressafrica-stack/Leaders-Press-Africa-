@@ -37,7 +37,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white pt-12 pb-6 border-t-4 border-red-600">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         <div>
-          <h3 className="text-xl font-bold tracking-wider text-red-500 mb-4">LEADERS PRESS AFRICA</h3>
+          <h3 className="text-xl font-bold tracking-wider text-red-500 mb-4">CIME</h3>
           <p className="text-gray-400 text-sm">
             Média d'actualité, d'analyse et de décryptage. L'information africaine en temps réel avec une vision indépendante.
           </p>

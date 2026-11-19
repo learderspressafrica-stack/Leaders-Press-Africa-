@@ -11,15 +11,50 @@ const client = createClient({
   useCdn: false,
 })
 
+const CATEGORY_LABELS: Record<string, string> = {
+  economie: 'Économie',
+  politique: 'Politique',
+  societe: 'Société',
+  tech: 'Tech & Innovation',
+  'tech-innovation': 'Tech & Innovation',
+  culture: 'Culture',
+  sport: 'Sport',
+}
+
+function normalizeKey(value: unknown): string {
+  if (!value || typeof value !== 'string') return ''
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // enlève les accents (société -> societe)
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params
-  const posts = await client.fetch(POSTS_BY_CATEGORY_QUERY, { categorySlug: slug })
+  const targetKey = normalizeKey(slug)
 
-  const categoryName = slug.charAt(0).toUpperCase() + slug.slice(1)
+  const rawPosts = await client.fetch(POSTS_BY_CATEGORY_QUERY)
+
+  const posts = (rawPosts || []).filter((post: any) => {
+    const candidates: unknown[] = [
+      post.category,
+      post.categoryTitle,
+      post.categorySlug,
+      ...(Array.isArray(post.categoriesList) ? post.categoriesList : []),
+    ]
+
+    return candidates.some((item) => normalizeKey(item) === targetKey)
+  })
+
+  const categoryName =
+    CATEGORY_LABELS[targetKey] ||
+    decodeURIComponent(slug).charAt(0).toUpperCase() + decodeURIComponent(slug).slice(1)
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-8">
@@ -32,16 +67,16 @@ export default async function CategoryPage({ params }: PageProps) {
         </p>
       </div>
 
-      {!posts || posts.length === 0 ? (
+      {posts.length === 0 ? (
         <div className="py-16 text-center">
           <p className="text-gray-500 text-lg">
-            Aucun article n'a encore été publié dans cette rubrique.
+            Aucun article n&apos;a encore été publié dans cette rubrique.
           </p>
           <Link
             href="/"
             className="inline-block mt-4 text-sm font-semibold text-red-600 hover:underline"
           >
-            ← Retourner à la page d'accueil
+            ← Retourner à la page d&apos;accueil
           </Link>
         </div>
       ) : (

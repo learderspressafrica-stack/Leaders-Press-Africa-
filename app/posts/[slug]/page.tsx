@@ -77,14 +77,14 @@ export default async function PostPage({ params }: PostPageProps) {
     description: post.excerpt || post.title,
     author: {
       '@type': 'Person',
-      name: post.author?.name || 'Rédaction Leaders Press Africa',
+      name: post.author?.name || 'Rédaction CIME',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Leaders Press Africa',
+      name: 'CIME',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://leaderspressafrica.com/logo.png',
+        url: 'https://leaders-press-africa.vercel.app/favicon.ico',
       },
     },
   }

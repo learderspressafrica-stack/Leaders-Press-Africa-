@@ -36,7 +36,7 @@ export default function Header() {
             {currentDate || 'Chargement...'}
           </span>
           <span className="font-semibold text-red-500 hidden md:inline">
-            Leaders Press Africa — L'information Africaine En Temps Réel
+            CIME — L&apos;information Africaine En Temps Réel
           </span>
           <SearchBar />
         </div>
@@ -44,12 +44,16 @@ export default function Header() {
 
       {/* Main Logo Header */}
       <div className="bg-[#0b1329] text-white py-6 border-b border-gray-800 text-center">
-        <Link href="/" className="inline-block">
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight uppercase">
-            LEADERS PRESS <span className="text-red-600">AFRICA</span>
-          </h1>
+        <Link href="/" className="inline-flex flex-col items-center">
+          <div className="bg-white p-2 rounded-xl shadow-md mb-2">
+            <img
+              src="/favicon.ico"
+              alt="Logo CIME"
+              className="h-16 w-16 object-contain"
+            />
+          </div>
           <p className="text-xs tracking-widest text-gray-400 uppercase mt-1">
-            MÉDIA D'ACTUALITÉ, D'ANALYSE ET DE DÉCRYPTAGE
+            MÉDIA D&apos;ACTUALITÉ, D&apos;ANALYSE ET DE DÉCRYPTAGE
           </p>
         </Link>
       </div>

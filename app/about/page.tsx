@@ -5,7 +5,7 @@ export default function AboutPage() {
     <main className="max-w-4xl mx-auto px-4 py-12">
       <div className="border-b-2 border-red-600 pb-4 mb-8">
         <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">
-          À Propos de Leaders Press Africa
+          À Propos de CIME
         </h1>
         <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">
           L'information africaine avec indépendance et rigueur
@@ -18,7 +18,7 @@ export default function AboutPage() {
             Notre Mission
           </h2>
           <p>
-            <strong>Leaders Press Africa</strong> est un organe d'information et de décryptage axé sur les dynamiques politiques, économiques, sociétales et technologiques du continent africain. Notre objectif principal est d'offrir une couverture impartiale, rigoureuse et en temps réel de l'actualité africaine et internationale.
+            <strong>CIME</strong> est un organe d'information et de décryptage axé sur les dynamiques politiques, économiques, sociétales et technologiques du continent africain. Notre objectif principal est d'offrir une couverture impartiale, rigoureuse et en temps réel de l'actualité africaine et internationale.
           </p>
         </section>
 

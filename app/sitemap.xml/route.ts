@@ -37,7 +37,7 @@ export async function GET() {
     <loc>${baseUrl}/posts/${post.slug}</loc>
     <news:news>
       <news:publication>
-        <news:name>Leaders Press Africa</news:name>
+        <news:name>CIME</news:name>
         <news:language>fr</news:language>
       </news:publication>
       <news:publication_date>${pubDate}</news:publication_date>

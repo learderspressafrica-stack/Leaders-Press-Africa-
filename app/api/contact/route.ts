@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     if (apiKey) {
       const resend = new Resend(apiKey)
       await resend.emails.send({
-        from: 'Leaders Press Africa <onboarding@resend.dev>',
+        from: 'CIME <onboarding@resend.dev>',
         to: 'learderspressafrica@gmail.com',
         subject: `Nouveau commentaire à valider de ${name}`,
         html: `

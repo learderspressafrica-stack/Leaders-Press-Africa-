@@ -52,7 +52,7 @@ export default function ContactPage() {
         Contact & Rédaction
       </h1>
       <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mt-1 mb-8">
-        Leaders Press Africa — À votre écoute
+        CIME — À votre écoute
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">

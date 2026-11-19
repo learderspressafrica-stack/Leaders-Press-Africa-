@@ -8,8 +8,8 @@ export const POSTS_QUERY = groq`
     slug,
     mainImage,
     excerpt,
-    "category": coalesce(category->title, category),
-    "categorySlug": coalesce(category->slug.current, category),
+    "category": coalesce(category->title, category, categories[0]->title, categories[0]),
+    "categorySlug": coalesce(category->slug.current, category, categories[0]->slug.current, categories[0]),
     author->{name}
   }
 `
@@ -23,22 +23,23 @@ export const POST_QUERY = groq`
     mainImage,
     body,
     publishedAt,
-    "category": coalesce(category->title, category),
+    "category": coalesce(category->title, category, categories[0]->title, categories[0]),
     author->{name, image}
   }
 `
 
 // Récupérer les articles d'une catégorie spécifique
 export const POSTS_BY_CATEGORY_QUERY = groq`
-  *[_type == "post" && (
-    lower(coalesce(category->slug.current, category->title, category)) == lower($categorySlug)
-  )] | order(_createdAt desc) {
+  *[_type == "post"] | order(_createdAt desc) {
     _id,
     title,
     slug,
     mainImage,
     excerpt,
-    "category": coalesce(category->title, category),
+    category,
+    "categoryTitle": coalesce(category->title, category),
+    "categorySlug": coalesce(category->slug.current, category),
+    "categoriesList": coalesce(categories[]->slug.current, categories[]->title, categories[], []),
     author->{name}
   }
 `

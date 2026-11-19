@@ -9,12 +9,15 @@ const inter = Inter({ subsets: ['latin'] })
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
 }
 
 export const metadata: Metadata = {
-  title: "Leaders Press Africa | L'information africaine en temps réel",
-  description: "Média d'actualité, d'analyse et de décryptage des enjeux africains et internationaux.",
+  title: {
+    default: "CIME | L'information africaine en temps réel",
+    template: '%s | CIME',
+  },
+  description:
+    "Média d'actualité, d'analyse et de décryptage des enjeux africains et internationaux.",
 }
 
 export default function RootLayout({
@@ -24,11 +27,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className={`${inter.className} bg-gray-50 min-h-screen text-gray-900 flex flex-col`}>
+      <body
+        className={`${inter.className} bg-gray-50 min-h-screen text-gray-900 flex flex-col`}
+      >
         <Header />
-        <div className="flex-grow">
-          {children}
-        </div>
+        <main className="flex-grow">{children}</main>
         <Footer />
       </body>
     </html>
