@@ -1,8 +1,9 @@
-export const revalidate = 0
+﻿export const revalidate = 0
 
 import { createClient } from 'next-sanity'
 import { POSTS_QUERY } from '@/sanity/queries'
 import { urlFor } from '@/sanity/image'
+import { estimateReadingTime } from '@/app/lib/readingTime'
 import Link from 'next/link'
 import Image from 'next/image'
 import AdBanner from '@/app/components/AdBanner'
@@ -27,6 +28,7 @@ export default async function HomePage() {
 
   const mainPost = posts[0]
   const recentPosts = posts.slice(1, 4)
+  const mainReadingTime = estimateReadingTime(mainPost.body || mainPost.excerpt || mainPost.title || '')
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-8">
@@ -35,31 +37,38 @@ export default async function HomePage() {
 
       {/* SECTION PRINCIPALE : À LA UNE + FIL D'ACTUALITÉ (SIDEBAR) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 border-b border-gray-200 pb-10">
-        
+
         {/* BLOC GAUCHE : UNE + RECENTS (8 COLS) */}
         <div className="lg:col-span-8">
           <h2 className="text-xs font-bold uppercase tracking-wider text-red-600 mb-4 border-l-4 border-red-600 pl-2">
             À la une
           </h2>
-          
+
           <div className="mb-8">
             {mainPost.mainImage && (
-              <div className="relative w-full h-[320px] md:h-[400px] rounded-lg overflow-hidden shadow-sm mb-4">
+              <div className="relative w-full aspect-[16/10] max-h-[420px] rounded-lg overflow-hidden shadow-sm mb-4 bg-gray-100">
                 <Image
                   src={urlFor(mainPost.mainImage).url()}
-                  alt={mainPost.title}
+                  alt={mainPost.title || 'Article à la une CIME'}
                   fill
-                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  className="object-cover object-top"
                   priority
                 />
               </div>
             )}
-            {mainPost.category && (
-              <span className="text-xs font-bold text-red-600 uppercase tracking-wider">
-                {mainPost.category}
+            <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wider mb-1">
+              {mainPost.category && (
+                <span className="text-red-600">
+                  {mainPost.category}
+                </span>
+              )}
+              {mainPost.category && <span className="text-gray-300">•</span>}
+              <span className="text-gray-500 font-semibold normal-case">
+                {mainReadingTime}
               </span>
-            )}
-            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mt-1 mb-3 hover:text-red-600 transition">
+            </div>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mt-1 mb-3 hover:text-red-600 transition leading-snug">
               <Link href={`/posts/${mainPost.slug?.current}`}>
                 {mainPost.title}
               </Link>
@@ -82,12 +91,13 @@ export default async function HomePage() {
               {recentPosts.map((post: any) => (
                 <article key={post._id} className="flex flex-col">
                   {post.mainImage && (
-                    <div className="relative w-full h-28 rounded overflow-hidden mb-2">
+                    <div className="relative w-full aspect-[16/10] rounded overflow-hidden mb-2 bg-gray-100">
                       <Image
                         src={urlFor(post.mainImage).url()}
-                        alt={post.title}
+                        alt={post.title || 'Article récent CIME'}
                         fill
-                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        className="object-cover object-top"
                       />
                     </div>
                   )}
