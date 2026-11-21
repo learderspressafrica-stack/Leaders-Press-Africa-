@@ -43,3 +43,12 @@ export const POSTS_BY_CATEGORY_QUERY = groq`
     author->{name}
   }
 `
+// Récupérer les messages actifs du bandeau défilant (Flash Info)
+export const FLASH_INFOS_QUERY = groq`
+  *[_type == "flashInfo" && active == true] | order(priority asc, _createdAt desc) {
+    _id,
+    message,
+    link,
+    priority
+  }
+`
