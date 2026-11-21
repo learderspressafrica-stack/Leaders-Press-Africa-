@@ -1,6 +1,7 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -39,32 +40,42 @@ export default function Footer() {
         <div>
           <h3 className="text-xl font-bold tracking-wider text-red-500 mb-4">CIME</h3>
           <p className="text-gray-400 text-sm">
-            Média d'actualité, d'analyse et de décryptage. L'information africaine en temps réel avec une vision indépendante.
+            Média d&apos;actualité, d&apos;analyse et de décryptage. L&apos;information africaine en temps réel avec une vision indépendante.
           </p>
         </div>
 
         <div>
-          <h4 className="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4 border-b border-gray-700 pb-2">Rubriques</h4>
+          <h4 className="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4 border-b border-gray-700 pb-2">
+            Rubriques
+          </h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><a href="/" className="hover:text-white transition">À la une</a></li>
-            <li><a href="/category/economie" className="hover:text-white transition">Économie</a></li>
-            <li><a href="/category/politique" className="hover:text-white transition">Politique</a></li>
-            <li><a href="/category/societe" className="hover:text-white transition">Société</a></li>
-            <li><a href="/category/tech-innovation" className="hover:text-white transition">Tech & Innovation</a></li>
+            <li><Link href="/" className="hover:text-white transition">À la une</Link></li>
+            <li><Link href="/category/economie" className="hover:text-white transition">Économie</Link></li>
+            <li><Link href="/category/politique" className="hover:text-white transition">Politique</Link></li>
+            <li><Link href="/category/societe" className="hover:text-white transition">Société</Link></li>
+            <li><Link href="/category/tech-innovation" className="hover:text-white transition">Tech &amp; Innovation</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4 border-b border-gray-700 pb-2">Information</h4>
+          <h4 className="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4 border-b border-gray-700 pb-2">
+            Information &amp; Légal
+          </h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><a href="/about" className="hover:text-white transition">À propos</a></li>
-            <li><a href="/contact" className="hover:text-white transition">Contact & Rédaction</a></li>
+            <li><Link href="/about" className="hover:text-white transition">À propos</Link></li>
+            <li><Link href="/contact" className="hover:text-white transition">Contact &amp; Rédaction</Link></li>
+            <li><Link href="/confidentialite" className="hover:text-white transition">Politique de confidentialité</Link></li>
+            <li><Link href="/conditions" className="hover:text-white transition">Conditions générales</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4 border-b border-gray-700 pb-2">Restez informé</h4>
-          <p className="text-gray-400 text-sm mb-4">Recevez les analyses majeures directement dans votre boîte mail.</p>
+          <h4 className="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4 border-b border-gray-700 pb-2">
+            Restez informé
+          </h4>
+          <p className="text-gray-400 text-sm mb-4">
+            Recevez les analyses majeures directement dans votre boîte mail.
+          </p>
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             <input
               type="email"
@@ -87,6 +98,19 @@ export default function Footer() {
               {message}
             </p>
           )}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 pt-6 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+        <p>© {new Date().getFullYear()} CIME. Tous droits réservés.</p>
+        <div className="flex items-center gap-4">
+          <Link href="/confidentialite" className="hover:text-gray-300 transition">
+            Politique de confidentialité
+          </Link>
+          <span>•</span>
+          <Link href="/conditions" className="hover:text-gray-300 transition">
+            Conditions générales
+          </Link>
         </div>
       </div>
     </footer>

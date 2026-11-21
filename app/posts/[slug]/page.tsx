@@ -1,4 +1,4 @@
-import { createClient, groq } from 'next-sanity'
+﻿import { createClient, groq } from 'next-sanity'
 import { urlFor } from '@/sanity/image'
 import { PortableText } from '@portabletext/react'
 import Link from 'next/link'
@@ -6,6 +6,9 @@ import Image from 'next/image'
 import Comments from '@/app/components/Comments'
 import ShareButtons from '@/app/components/ShareButtons'
 import AdBanner from '@/app/components/AdBanner'
+import { estimateReadingTime } from '@/app/lib/readingTime'
+
+export const revalidate = 0
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'dc6zf0ru',
@@ -52,139 +55,131 @@ interface PostPageProps {
 
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params
-  const post = await client.fetch(ARTICLE_QUERY, { slug })
-  const relatedPosts = await client.fetch(RELATED_POSTS_QUERY, { slug })
+  const post = await client.fetch(ARTICLE_QUERY, { slug }, { cache: 'no-store' })
+  const relatedPosts = await client.fetch(RELATED_POSTS_QUERY, { slug }, { cache: 'no-store' })
 
   if (!post) {
     return (
       <main className="max-w-4xl mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-gray-900">Article non trouvé</h1>
         <Link href="/" className="mt-4 inline-block text-red-600 hover:underline">
-          ← Retourner à l'accueil
+          ← Retour à l&apos;accueil
         </Link>
       </main>
     )
   }
 
-  // BALISAGE STRUCTURÉ GOOGLE NEWSARTICLE (JSON-LD)
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: post.title,
-    image: post.mainImage ? [urlFor(post.mainImage).url()] : [],
-    datePublished: post.publishedAt || new Date().toISOString(),
-    dateModified: post.publishedAt || new Date().toISOString(),
-    description: post.excerpt || post.title,
-    author: {
-      '@type': 'Person',
-      name: post.author?.name || 'Rédaction CIME',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'CIME',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://leaders-press-africa.vercel.app/favicon.ico',
-      },
-    },
-  }
+  const readingTime = estimateReadingTime(post.body || post.excerpt || '')
+  const formattedDate = post.publishedAt
+    ? new Date(post.publishedAt).toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : null
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8 bg-white text-gray-900">
-      {/* SCRIPT DE BALISAGE GOOGLE NEWS */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <article className="max-w-4xl mx-auto px-4 py-8">
+      <div className="mb-4">
+        <Link href="/" className="text-xs font-semibold text-red-600 hover:underline">
+          ← Retour aux actualités
+        </Link>
+      </div>
 
-      {/* En-tête de l'article */}
-      <article className="border-b border-gray-200 pb-12">
-        {post.category && (
-          <span className="text-xs font-bold text-red-600 uppercase tracking-wider">
-            {post.category}
-          </span>
+      {post.category && (
+        <span className="inline-block text-xs font-bold text-red-600 uppercase tracking-wider mb-2">
+          {post.category}
+        </span>
+      )}
+
+      <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-900 leading-tight mb-4">
+        {post.title}
+      </h1>
+
+      <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-gray-600 mb-6 pb-4 border-b border-gray-200">
+        {post.author?.name && (
+          <span className="font-semibold text-gray-800">Par {post.author.name}</span>
         )}
-        <h1 className="text-3xl md:text-5xl font-black text-gray-900 mt-2 mb-4 leading-tight">
-          {post.title}
-        </h1>
+        {formattedDate && (
+          <>
+            <span>•</span>
+            <span>{formattedDate}</span>
+          </>
+        )}
+        <span>•</span>
+        <span className="inline-flex items-center font-semibold text-red-700 bg-red-50 px-2.5 py-0.5 rounded-full">
+          {readingTime}
+        </span>
+      </div>
 
-        <div className="flex items-center space-x-4 text-xs text-gray-600 mb-6">
-          {post.author?.name && (
-            <span>
-              Par <strong className="text-gray-900">{post.author.name}</strong>
-            </span>
-          )}
-          {post.publishedAt && (
-            <span>• {new Date(post.publishedAt).toLocaleDateString('fr-FR')}</span>
-          )}
+      {post.mainImage && (
+        <div className="relative w-full h-[260px] sm:h-[420px] rounded-lg overflow-hidden shadow-sm mb-6">
+          <Image
+            src={urlFor(post.mainImage).url()}
+            alt={post.title}
+            fill
+            className="object-cover"
+            priority
+          />
         </div>
+      )}
 
-        {/* BOUTONS DE PARTAGE RÉSEAUX SOCIAUX */}
+      {post.excerpt && (
+        <p className="text-base sm:text-lg text-gray-700 font-medium leading-relaxed mb-6 bg-gray-100 p-4 rounded-lg border-l-4 border-red-600">
+          {post.excerpt}
+        </p>
+      )}
+
+      <div className="prose prose-gray max-w-none text-gray-800 leading-relaxed space-y-4 mb-8">
+        {Array.isArray(post.body) && <PortableText value={post.body} />}
+      </div>
+
+      <div className="my-6">
         <ShareButtons title={post.title} />
+      </div>
 
-        {post.mainImage && (
-          <div className="relative w-full h-[350px] md:h-[480px] rounded-lg overflow-hidden my-6 shadow-sm">
-            <Image
-              src={urlFor(post.mainImage).url()}
-              alt={post.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-        )}
-
-        {/* Corps du texte en noir très lisible sur fond blanc */}
-        <div className="prose prose-lg max-w-none text-gray-900 leading-relaxed">
-          {post.body && <PortableText value={post.body} />}
-        </div>
-      </article>
-
-      {/* BANNIÈRE PUBLICITAIRE FIN D'ARTICLE */}
       <AdBanner format="inline" />
 
-      {/* ESPACE COMMENTAIRES */}
-      <Comments postId={post._id} comments={post.comments || []} />
-
-      {/* SECTION ARTICLES SIMILAIRES */}
-      {relatedPosts.length > 0 && (
-        <section className="mt-12 pt-8 border-t border-gray-200">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-6 border-l-4 border-red-600 pl-2">
-            À lire aussi
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedPosts.map((related: any) => (
-              <article key={related._id} className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
-                {related.mainImage && (
-                  <div className="relative w-full h-36">
+      {Array.isArray(relatedPosts) && relatedPosts.length > 0 && (
+        <section className="mt-10 pt-8 border-t border-gray-200">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">À lire aussi</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {relatedPosts.map((item: any) => (
+              <Link
+                key={item._id}
+                href={`/posts/${item.slug?.current}`}
+                className="group block bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-red-500 transition"
+              >
+                {item.mainImage && (
+                  <div className="relative w-full h-28">
                     <Image
-                      src={urlFor(related.mainImage).url()}
-                      alt={related.title}
+                      src={urlFor(item.mainImage).url()}
+                      alt={item.title}
                       fill
                       className="object-cover"
                     />
                   </div>
                 )}
-                <div className="p-4 flex-grow flex flex-col justify-between">
-                  <div>
-                    {related.category && (
-                      <span className="text-[10px] font-bold text-red-600 uppercase tracking-wide">
-                        {related.category}
-                      </span>
-                    )}
-                    <h3 className="text-sm font-bold text-gray-900 mt-1 hover:text-red-600 transition leading-snug line-clamp-2">
-                      <Link href={`/posts/${related.slug?.current}`}>
-                        {related.title}
-                      </Link>
-                    </h3>
-                  </div>
+                <div className="p-3">
+                  {item.category && (
+                    <span className="text-[10px] font-bold text-red-600 uppercase block mb-1">
+                      {item.category}
+                    </span>
+                  )}
+                  <h3 className="text-xs font-bold text-gray-900 group-hover:text-red-600 transition line-clamp-2">
+                    {item.title}
+                  </h3>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </section>
       )}
-    </main>
+
+      <div className="mt-10 pt-8 border-t border-gray-200">
+        <Comments postId={post._id} comments={post.comments || []} />
+      </div>
+    </article>
   )
 }
+
