@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import SocialLinks from '@/app/components/SocialLinks'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -42,6 +43,7 @@ export default function Footer() {
           <p className="text-gray-400 text-sm">
             Média d&apos;actualité, d&apos;analyse et de décryptage. L&apos;information africaine en temps réel avec une vision indépendante.
           </p>
+          <SocialLinks />
         </div>
 
         <div>
