@@ -13,7 +13,7 @@ const SOCIAL_LINKS: SocialItem[] = [
   {
     name: 'instagram',
     label: 'Instagram',
-    href: 'https://www.instagram.com/TON_COMPTE_INSTAGRAM',
+    href: 'https://www.instagram.com/cime_bf?utm',
   },
   {
     name: 'tiktok',
