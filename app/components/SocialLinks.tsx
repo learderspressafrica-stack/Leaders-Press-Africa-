@@ -23,7 +23,7 @@ const SOCIAL_LINKS: SocialItem[] = [
   {
     name: 'youtube',
     label: 'YouTube',
-    href: 'https://www.youtube.com/@TON_COMPTE_YOUTUBE',
+    href: 'https://www.youtube.com/@cime_bf',
   },
 ]
 
