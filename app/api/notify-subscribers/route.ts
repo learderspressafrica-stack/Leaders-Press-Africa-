@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+﻿import { NextResponse } from 'next/server'
 import { createClient } from 'next-sanity'
 import { Resend } from 'resend'
 
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   try {
     const secret = req.headers.get('x-notify-secret')
     if (process.env.NOTIFY_SECRET && secret !== process.env.NOTIFY_SECRET) {
-      return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
+      return NextResponse.json({ error: 'Non autorisÃ©.' }, { status: 401 })
     }
 
     const payload = await req.json()
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     if (!title || !slug) {
       return NextResponse.json(
-        { error: 'Titre et slug de l’article requis.' },
+        { error: 'Titre et slug de lâ€™article requis.' },
         { status: 400 }
       )
     }
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     const apiKey = process.env.RESEND_API_KEY
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'RESEND_API_KEY non configurée.' },
+        { error: 'RESEND_API_KEY non configurÃ©e.' },
         { status: 500 }
       )
     }
@@ -52,15 +52,15 @@ export async function POST(req: Request) {
 
     if (uniqueEmails.length === 0) {
       return NextResponse.json(
-        { message: 'Aucun abonné à notifier.', sent: 0 },
+        { message: 'Aucun abonnÃ© Ã  notifier.', sent: 0 },
         { status: 200 }
       )
     }
 
     const resend = new Resend(apiKey)
-    const articleUrl = `https://leaders-press-africa.vercel.app/posts/${slug}`
+    const articleUrl = `https://cime-bf.vercel.app/posts/${slug}`
 
-    // Envoi en copie cachée (bcc) pour protéger la confidentialité des abonnés
+    // Envoi en copie cachÃ©e (bcc) pour protÃ©ger la confidentialitÃ© des abonnÃ©s
     const { error } = await resend.emails.send({
       from: 'CIME <onboarding@resend.dev>',
       to: 'learderspressafrica@gmail.com',
@@ -68,12 +68,12 @@ export async function POST(req: Request) {
       subject: `Nouvelle publication sur CIME : ${title}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #dc2626;">Nouvel article publié sur CIME</h2>
+          <h2 style="color: #dc2626;">Nouvel article publiÃ© sur CIME</h2>
           <h3 style="color: #111827;">${title}</h3>
           ${excerpt ? `<p style="color: #4b5563;">${excerpt}</p>` : ''}
           <p style="margin-top: 24px;">
             <a href="${articleUrl}" style="background-color: #dc2626; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">
-              Lire l’article complet sur CIME
+              Lire lâ€™article complet sur CIME
             </a>
           </p>
         </div>
@@ -81,15 +81,15 @@ export async function POST(req: Request) {
     })
 
     if (error) {
-      console.error('Erreur envoi Resend abonnés:', error)
+      console.error('Erreur envoi Resend abonnÃ©s:', error)
       return NextResponse.json(
-        { error: 'Échec de l’envoi aux abonnés.', details: error },
+        { error: 'Ã‰chec de lâ€™envoi aux abonnÃ©s.', details: error },
         { status: 500 }
       )
     }
 
     return NextResponse.json(
-      { message: 'Notifications envoyées.', sent: uniqueEmails.length },
+      { message: 'Notifications envoyÃ©es.', sent: uniqueEmails.length },
       { status: 200 }
     )
   } catch (error) {

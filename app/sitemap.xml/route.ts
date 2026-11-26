@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+﻿import { NextResponse } from 'next/server'
 import { createClient, groq } from 'next-sanity'
 
 const client = createClient({
@@ -9,7 +9,7 @@ const client = createClient({
 })
 
 export async function GET() {
-  const baseUrl = 'https://leaders-press-africa.vercel.app'
+  const baseUrl = 'https://cime-bf.vercel.app'
 
   const posts = await client.fetch(
     groq`*[_type == "post"] | order(publishedAt desc) {
